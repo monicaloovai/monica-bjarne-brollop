@@ -1,20 +1,19 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Monica & Bjarne</title>
 
-<style>
-*{
-  box-sizing:border-box;
-}
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-html, body{
+<style>
+*{box-sizing:border-box}
+
+html,body{
   margin:0;
   padding:0;
   background:#eee4d8;
-  font-family:Arial, sans-serif;
 }
 
 body{
@@ -27,19 +26,15 @@ body{
   width:100%;
   max-width:1024px;
   aspect-ratio:1024 / 1536;
-  background-image:url("background.jpg.jpeg");
-  background-size:contain;
-  background-repeat:no-repeat;
-  background-position:center top;
+  background:url("background.jpg") center top / contain no-repeat;
 }
 
-/* osynlig knapp ovanpå VÄLJ FILER */
 .upload-click{
   position:absolute;
-  left:22.8%;
-  top:66.3%;
-  width:14.7%;
-  height:3.1%;
+  left:27.8%;
+  top:52.6%;
+  width:11.2%;
+  height:2.8%;
   cursor:pointer;
   z-index:20;
 }
@@ -48,7 +43,26 @@ body{
   display:none;
 }
 
-/* mobil */
+.status-box{
+  position:absolute;
+  left:10.5%;
+  top:61.5%;
+  width:45%;
+  min-height:70px;
+  padding:14px;
+  background:rgba(255,255,255,.92);
+  border-radius:10px;
+  font-family:Arial,sans-serif;
+  font-size:14px;
+  color:#222;
+  z-index:30;
+  display:none;
+}
+
+.status-box.show{
+  display:block;
+}
+
 @media(max-width:700px){
   .page{
     width:100vw;
@@ -61,14 +75,71 @@ body{
 <body>
 
 <div class="page">
+
   <label class="upload-click">
-    <input 
+    <input
+      id="fileInput"
       type="file"
       multiple
       accept="image/jpeg,image/png,image/webp,image/heic,video/mp4,video/quicktime"
-    />
+    >
   </label>
+
+  <div id="statusBox" class="status-box"></div>
+
 </div>
+
+<script>
+const SUPABASE_URL = "https://xcjlfsyvufnsouzjfhcb.supabase.co";
+const SUPABASE_KEY = "sb_publishable_nx-e_qhQnrjvcyxdwEjrzg_zftmmMDe";
+const BUCKET = "wedding-uploads";
+
+const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const fileInput = document.getElementById("fileInput");
+const statusBox = document.getElementById("statusBox");
+
+fileInput.addEventListener("change", async () => {
+  const files = Array.from(fileInput.files);
+  if (!files.length) return;
+
+  statusBox.classList.add("show");
+  statusBox.innerHTML = "Laddar upp...";
+
+  let uploaded = 0;
+
+  for (const file of files) {
+    const cleanName = file.name
+      .replaceAll(" ", "-")
+      .replaceAll("å","a")
+      .replaceAll("ä","a")
+      .replaceAll("ö","o")
+      .replaceAll("Å","A")
+      .replaceAll("Ä","A")
+      .replaceAll("Ö","O");
+
+    const fileName = `brollop/${Date.now()}-${Math.random().toString(36).slice(2)}-${cleanName}`;
+
+    const { error } = await client.storage
+      .from(BUCKET)
+      .upload(fileName, file, {
+        cacheControl: "3600",
+        upsert: false
+      });
+
+    if (error) {
+      statusBox.innerHTML = "❌ Fel: " + error.message;
+      return;
+    }
+
+    uploaded++;
+    statusBox.innerHTML = `Laddar upp ${uploaded} av ${files.length}...`;
+  }
+
+  statusBox.innerHTML = "✅ Tack! Dina filer har laddats upp.";
+  fileInput.value = "";
+});
+</script>
 
 </body>
 </html>
