@@ -19,13 +19,15 @@ html,body{
 body{
   display:flex;
   justify-content:center;
+  align-items:flex-start;
 }
 
 .page{
   position:relative;
-  width:100%;
+  width:100vw;
   max-width:1024px;
   aspect-ratio:1024 / 1536;
+  min-height:100vh;
   background:url("background.jpeg") center top / contain no-repeat;
 }
 
@@ -67,6 +69,25 @@ body{
   .page{
     width:100vw;
     max-width:none;
+    min-height:153vw;
+    background-size:100% auto;
+    background-position:center top;
+  }
+
+  .upload-click{
+    left:27.8%;
+    top:52.6%;
+    width:11.2%;
+    height:2.8%;
+  }
+
+  .status-box{
+    left:8%;
+    top:60.5%;
+    width:50%;
+    min-height:55px;
+    padding:10px;
+    font-size:11px;
   }
 }
 </style>
