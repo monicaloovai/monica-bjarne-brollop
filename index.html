@@ -1,253 +1,50 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Monica & Bjarne</title>
 
 <style>
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
 
 body{
   margin:0;
-  background:#efe4d6;
-  color:#252525;
-  font-family: Arial, sans-serif;
-}
-
-.scaler{
-  width:100%;
+  background:#eee4d8;
   display:flex;
   justify-content:center;
-  overflow:hidden;
+  font-family:Arial, sans-serif;
 }
 
 .page{
-  width:1024px;
-  min-height:1536px;
-  padding:70px;
   position:relative;
-  background:
-    radial-gradient(circle at top left, rgba(255,255,255,.9), transparent 35%),
-    radial-gradient(circle at bottom right, rgba(255,255,255,.7), transparent 40%),
-    linear-gradient(180deg,#fbf7f0,#efe2d1);
-  overflow:hidden;
-  transform-origin:top center;
+  width:100%;
+  max-width:1024px;
+  aspect-ratio:1024 / 1536;
+  background:url("background.jpg") center top / contain no-repeat;
 }
 
-.page:before{
-  content:"";
+/* osynlig klickyta exakt över VÄLJ FILER */
+.upload-click{
   position:absolute;
-  inset:0;
-  background:
-    url("https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&w=700&q=80") top left/330px no-repeat,
-    url("https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&w=700&q=80") top right/330px no-repeat,
-    url("https://images.unsplash.com/photo-1525097487452-6278ff080c31?auto=format&fit=crop&w=900&q=80") center/cover no-repeat;
-  opacity:.28;
+  left:22.8%;
+  top:65.2%;
+  width:14.8%;
+  height:3.2%;
+  cursor:pointer;
+  z-index:10;
 }
 
-.content{
-  position:relative;
-  z-index:2;
-  text-align:center;
-}
-
-.serif{
-  font-family: Georgia, "Times New Roman", serif;
-}
-
-.gold{color:#b88a43}
-
-.logo{
-  font-size:58px;
-  letter-spacing:30px;
-  color:#b88a43;
-}
-
-.names{
-  font-size:76px;
-  margin:45px 0 20px;
-  font-weight:400;
-}
-
-.date{
-  color:#b88a43;
-  letter-spacing:12px;
-  font-size:22px;
-  font-weight:bold;
-}
-
-.line{
-  margin:24px auto;
-  color:#b88a43;
-  font-size:28px;
-}
-
-.headtext{
-  font-size:31px;
-  margin-top:20px;
-}
-
-.subtext{
-  font-size:22px;
-  line-height:1.7;
-}
-
-.heart{
-  color:#b88a43;
-  font-size:32px;
-  margin:18px 0 30px;
-}
-
-.cards{
-  display:grid;
-  grid-template-columns:1.1fr .9fr;
-  gap:22px;
-}
-
-.card{
-  background:rgba(255,255,255,.82);
-  border-radius:22px;
-  padding:38px;
-  box-shadow:0 18px 40px rgba(83,55,20,.16);
-}
-
-.card h2{
-  font-family:Georgia,serif;
-  font-size:31px;
-  letter-spacing:1px;
-  font-weight:400;
-  text-transform:uppercase;
-  margin:18px 0 20px;
-}
-
-.uploadIcon{
-  font-size:62px;
-  color:#b88a43;
-}
-
-.uploadBox{
-  border:2px dashed #d2b071;
-  border-radius:18px;
-  padding:38px 25px;
-  margin-top:25px;
-}
-
-.uploadBox .imgIcon{
-  font-size:44px;
-}
-
-.uploadBox p{
-  font-size:20px;
-  line-height:1.6;
-}
-
-input[type=file]{
+.upload-click input{
   display:none;
 }
 
-.btn{
-  display:inline-block;
-  background:linear-gradient(180deg,#cfa054,#a8752f);
-  color:white;
-  padding:17px 45px;
-  border-radius:7px;
-  font-size:18px;
-  letter-spacing:2px;
-  cursor:pointer;
-  margin:8px 0 12px;
-}
-
-.small{
-  font-size:15px;
-}
-
-.qr img{
-  width:270px;
-  background:white;
-  padding:18px;
-  border-radius:16px;
-  box-shadow:0 8px 22px rgba(0,0,0,.12);
-}
-
-.info{
-  margin-top:24px;
-  background:rgba(255,255,255,.82);
-  border-radius:18px;
-  padding:25px 20px;
-  box-shadow:0 18px 40px rgba(83,55,20,.14);
-}
-
-.info h2{
-  font-family:Georgia,serif;
-  font-size:28px;
-  font-weight:400;
-  margin:0 0 22px;
-  text-transform:uppercase;
-}
-
-.infoGrid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-}
-
-.item{
-  padding:0 22px;
-  border-right:1px solid #d8b77a;
-}
-
-.item:last-child{border-right:0}
-
-.circle{
-  width:74px;
-  height:74px;
-  border:1px solid #d8b77a;
-  border-radius:50%;
-  margin:0 auto 12px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:34px;
-  color:#b88a43;
-}
-
-.item h3{
-  font-family:Georgia,serif;
-  font-size:21px;
-  font-weight:400;
-  margin:6px 0;
-  text-transform:uppercase;
-}
-
-.item p{
-  font-size:15px;
-  line-height:1.5;
-  margin:0;
-}
-
-.footer{
-  margin-top:42px;
-  font-family:Georgia,serif;
-  font-size:43px;
-  font-style:italic;
-}
-
-.sign{
-  margin-top:18px;
-  color:#b88a43;
-  letter-spacing:12px;
-  font-size:18px;
-}
-
-@media(max-width:900px){
+@media(max-width:600px){
   .page{
-    width:1024px;
-    transform:scale(calc(100vw / 1024));
-    transform-origin:top center;
-  }
-
-  .scaler{
-    height:calc(1536px * (100vw / 1024));
+    width:100vw;
+    max-width:none;
   }
 }
 </style>
@@ -255,106 +52,16 @@ input[type=file]{
 
 <body>
 
-<div class="scaler">
-  <main class="page">
-    <div class="content">
+<div class="page">
 
-      <div class="logo serif">M | B</div>
-      <div class="line">♡</div>
+  <label class="upload-click">
+    <input 
+      type="file" 
+      multiple 
+      accept="image/jpeg,image/png,image/webp,image/heic,video/mp4,video/quicktime"
+    >
+  </label>
 
-      <h1 class="names serif">Monica & Bjarne</h1>
-
-      <div class="date">22 AUGUSTI 2026</div>
-
-      <div class="line">──── ♡ ────</div>
-
-      <div class="headtext serif">Dela era minnen från vår stora dag</div>
-
-      <p class="subtext">
-        Ladda upp bilder och videoklipp så att vi kan<br>
-        bevara alla vackra ögonblick för alltid.
-      </p>
-
-      <div class="heart">♥</div>
-
-      <section class="cards">
-
-        <div class="card">
-          <div class="uploadIcon">☁︎</div>
-          <h2>Ladda upp bilder & videos</h2>
-
-          <div class="line">──── ♡ ────</div>
-
-          <p class="small">Tack för att du hjälper oss samla minnen från dagen.</p>
-
-          <div class="uploadBox">
-            <div class="imgIcon">▧</div>
-            <p>Dra och släpp filer här<br>eller klicka för att välja</p>
-
-            <label class="btn">
-              VÄLJ FILER
-              <input type="file" multiple accept="image/*,video/*">
-            </label>
-
-            <div class="small">JPG, PNG, WebP, GIF, MP4 &nbsp;•&nbsp; Max 100MB per fil</div>
-          </div>
-        </div>
-
-        <div class="card qr">
-          <h2>Scanna QR-koden</h2>
-
-          <div class="line">──── ♡ ────</div>
-
-          <p>Öppna sidan direkt i mobilen.</p>
-
-          <img src="https://api.qrserver.com/v1/create-qr-code/?size=360x360&data=https://monica-bjarne-brollop.vercel.app" alt="QR-kod">
-
-          <div class="line">──── ♡ ────</div>
-
-          <p class="small">
-            Spara gärna koden och dela<br>
-            med andra gäster under dagen.
-          </p>
-        </div>
-
-      </section>
-
-      <section class="info">
-        <h2>Vad kan jag ladda upp?</h2>
-
-        <div class="infoGrid">
-          <div class="item">
-            <div class="circle">📷</div>
-            <h3>Foton</h3>
-            <p>Dela dina bästa bilder från vår stora dag.</p>
-          </div>
-
-          <div class="item">
-            <div class="circle">▭</div>
-            <h3>Videoklipp</h3>
-            <p>Korta klipp som fångar stämningen.</p>
-          </div>
-
-          <div class="item">
-            <div class="circle">♡</div>
-            <h3>Minnen</h3>
-            <p>Alla små ögonblick vi vill bevara.</p>
-          </div>
-
-          <div class="item">
-            <div class="circle">👥</div>
-            <h3>Tillsammans</h3>
-            <p>Tillsammans skapar vi vårt bröllopsalbum.</p>
-          </div>
-        </div>
-      </section>
-
-      <div class="footer">Tack för att du är en del av vår dag!</div>
-      <div class="heart">♥</div>
-      <div class="sign">MONICA & BJARNE</div>
-
-    </div>
-  </main>
 </div>
 
 </body>
