@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Monica & Bjarne</title>
 
 <style>
@@ -10,12 +10,16 @@
   box-sizing:border-box;
 }
 
-body{
+html, body{
   margin:0;
+  padding:0;
   background:#eee4d8;
+  font-family:Arial, sans-serif;
+}
+
+body{
   display:flex;
   justify-content:center;
-  font-family:Arial, sans-serif;
 }
 
 .page{
@@ -23,25 +27,29 @@ body{
   width:100%;
   max-width:1024px;
   aspect-ratio:1024 / 1536;
-  background:url("background.jpg") center top / contain no-repeat;
+  background-image:url("background.jpg.jpeg");
+  background-size:contain;
+  background-repeat:no-repeat;
+  background-position:center top;
 }
 
-/* osynlig klickyta exakt över VÄLJ FILER */
+/* osynlig knapp ovanpå VÄLJ FILER */
 .upload-click{
   position:absolute;
   left:22.8%;
-  top:65.2%;
-  width:14.8%;
-  height:3.2%;
+  top:66.3%;
+  width:14.7%;
+  height:3.1%;
   cursor:pointer;
-  z-index:10;
+  z-index:20;
 }
 
 .upload-click input{
   display:none;
 }
 
-@media(max-width:600px){
+/* mobil */
+@media(max-width:700px){
   .page{
     width:100vw;
     max-width:none;
@@ -53,15 +61,13 @@ body{
 <body>
 
 <div class="page">
-
   <label class="upload-click">
     <input 
-      type="file" 
-      multiple 
+      type="file"
+      multiple
       accept="image/jpeg,image/png,image/webp,image/heic,video/mp4,video/quicktime"
-    >
+    />
   </label>
-
 </div>
 
 </body>
