@@ -27,8 +27,8 @@ body{
   width:100vw;
   max-width:1024px;
   aspect-ratio:1024 / 1536;
-  min-height:100vh;
-  background:url("background.jpeg") center top / contain no-repeat;
+  min-height:153vw;
+  background:url("background.jpeg") center top / 100% auto no-repeat;
 }
 
 .upload-click{
@@ -38,7 +38,7 @@ body{
   width:11.2%;
   height:2.8%;
   cursor:pointer;
-  z-index:20;
+  z-index:50;
 }
 
 .upload-click input{
@@ -47,47 +47,36 @@ body{
 
 .status-box{
   position:absolute;
-  left:10.5%;
-  top:61.5%;
-  width:45%;
-  min-height:70px;
-  padding:14px;
-  background:rgba(255,255,255,.92);
-  border-radius:10px;
+  left:8%;
+  top:60.5%;
+  width:50%;
+  min-height:60px;
+  padding:10px;
+  background:rgba(255,255,255,.95);
+  border-radius:12px;
   font-family:Arial,sans-serif;
-  font-size:14px;
+  font-size:12px;
   color:#222;
-  z-index:30;
+  z-index:60;
   display:none;
+  box-shadow:0 5px 18px rgba(0,0,0,.15);
 }
 
 .status-box.show{
   display:block;
 }
 
-@media(max-width:700px){
+@media(min-width:701px){
   .page{
-    width:100vw;
-    max-width:none;
-    min-height:153vw;
-    background-size:100% auto;
-    background-position:center top;
-  }
-
-  .upload-click{
-    left:27.8%;
-    top:52.6%;
-    width:11.2%;
-    height:2.8%;
+    min-height:auto;
   }
 
   .status-box{
-    left:8%;
-    top:60.5%;
-    width:50%;
-    min-height:55px;
-    padding:10px;
-    font-size:11px;
+    left:10.5%;
+    top:61.5%;
+    width:45%;
+    font-size:14px;
+    padding:14px;
   }
 }
 </style>
@@ -102,7 +91,7 @@ body{
       id="fileInput"
       type="file"
       multiple
-      accept="image/jpeg,image/png,image/webp,image/heic,video/mp4,video/quicktime"
+      accept="image/*,video/*"
     >
   </label>
 
@@ -115,49 +104,64 @@ const SUPABASE_URL = "https://xcjlfsyvufnsouzjfhcb.supabase.co";
 const SUPABASE_KEY = "sb_publishable_nx-e_qhQnrjvcyxdwEjrzg_zftmmMDe";
 const BUCKET = "wedding-uploads";
 
-const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const fileInput = document.getElementById("fileInput");
 const statusBox = document.getElementById("statusBox");
 
+function showMessage(message){
+  statusBox.classList.add("show");
+  statusBox.innerHTML = message;
+}
+
+function cleanFileName(name){
+  return name
+    .replace(/\s+/g, "-")
+    .replace(/[åä]/g, "a")
+    .replace(/[ö]/g, "o")
+    .replace(/[ÅÄ]/g, "A")
+    .replace(/[Ö]/g, "O")
+    .replace(/[^a-zA-Z0-9._-]/g, "");
+}
+
 fileInput.addEventListener("change", async () => {
   const files = Array.from(fileInput.files);
+
   if (!files.length) return;
 
-  statusBox.classList.add("show");
-  statusBox.innerHTML = "Laddar upp...";
+  showMessage("⏳ Laddar upp...");
 
   let uploaded = 0;
 
   for (const file of files) {
-    const cleanName = file.name
-      .replaceAll(" ", "-")
-      .replaceAll("å","a")
-      .replaceAll("ä","a")
-      .replaceAll("ö","o")
-      .replaceAll("Å","A")
-      .replaceAll("Ä","A")
-      .replaceAll("Ö","O");
+    try {
+      const safeName = cleanFileName(file.name);
+      const filePath = "brollop/" + Date.now() + "-" + Math.random().toString(36).slice(2) + "-" + safeName;
 
-    const fileName = `brollop/${Date.now()}-${Math.random().toString(36).slice(2)}-${cleanName}`;
+      const { data, error } = await supabaseClient.storage
+        .from(BUCKET)
+        .upload(filePath, file, {
+          cacheControl: "3600",
+          upsert: false,
+          contentType: file.type || "application/octet-stream"
+        });
 
-    const { error } = await client.storage
-      .from(BUCKET)
-      .upload(fileName, file, {
-        cacheControl: "3600",
-        upsert: false
-      });
+      if (error) {
+        console.error("Supabase error:", error);
+        showMessage("❌ Fel: " + error.message);
+        return;
+      }
 
-    if (error) {
-      statusBox.innerHTML = "❌ Fel: " + error.message;
+      uploaded++;
+      showMessage("⏳ Laddar upp " + uploaded + " av " + files.length + "...");
+    } catch (err) {
+      console.error("Upload failed:", err);
+      showMessage("❌ Fel: " + (err.message || "Uppladdningen misslyckades"));
       return;
     }
-
-    uploaded++;
-    statusBox.innerHTML = `Laddar upp ${uploaded} av ${files.length}...`;
   }
 
-  statusBox.innerHTML = "✅ Tack! Dina filer har laddats upp.";
+  showMessage("✅ Tack! Dina filer har laddats upp.");
   fileInput.value = "";
 });
 </script>
