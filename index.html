@@ -1,270 +1,261 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monica & Bjarne</title>
 
-  <title>Monica & Bjarne</title>
+<style>
+*{
+  box-sizing:border-box;
+}
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+html,
+body{
+  margin:0;
+  padding:0;
+  background:#eee4d8;
+}
 
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-      background: #eee4d8;
-    }
+body{
+  display:flex;
+  justify-content:center;
+}
 
-    body {
-      display: flex;
-      justify-content: center;
-    }
+.page{
+  position:relative;
+  width:100vw;
+  max-width:1024px;
+  aspect-ratio:1024 / 1536;
+  min-height:153vw;
+  background:url("background.jpeg") center top / 100% auto no-repeat;
+}
 
-    .page {
-      position: relative;
-      width: 100vw;
-      max-width: 1024px;
-      aspect-ratio: 1024 / 1536;
-      min-height: 153vw;
-      background: url("background.jpeg") center top / 100% auto no-repeat;
-    }
+.upload-click{
+  position:absolute;
+  left:27.8%;
+  top:52.6%;
+  width:11.2%;
+  height:2.8%;
+  cursor:pointer;
+  z-index:50;
+}
 
-    .upload-click {
-      position: absolute;
-      left: 27.8%;
-      top: 52.6%;
-      width: 11.2%;
-      height: 2.8%;
-      cursor: pointer;
-      z-index: 50;
-    }
+.upload-click input{
+  display:none;
+}
 
-    .upload-click input {
-      display: none;
-    }
+.status-box{
+  position:absolute;
+  left:8%;
+  top:60.5%;
+  width:50%;
+  padding:12px;
+  background:white;
+  border-radius:14px;
+  font-family:Arial,sans-serif;
+  font-size:13px;
+  color:#222;
+  z-index:60;
+  display:none;
+  box-shadow:0 5px 18px rgba(0,0,0,.15);
+}
 
-    .status-box {
-      position: absolute;
-      left: 8%;
-      top: 60.5%;
-      width: 50%;
-      padding: 12px;
-      background: white;
-      border-radius: 14px;
-      font-family: Arial, sans-serif;
-      font-size: 13px;
-      color: #222;
-      z-index: 60;
-      display: none;
-      box-shadow: 0 5px 18px rgba(0, 0, 0, 0.15);
-    }
+.status-box.show{
+  display:block;
+}
 
-    .status-box.show {
-      display: block;
-    }
+.status-box.success{
+  color:#176b3a;
+  background:#f0fff5;
+}
 
-    .status-box.success {
-      color: #176b3a;
-      background: #f0fff5;
-    }
+.status-box.error{
+  color:#9b1c1c;
+  background:#fff2f2;
+}
 
-    .status-box.error {
-      color: #9b1c1c;
-      background: #fff2f2;
-    }
-
-    @media (min-width: 701px) {
-      .page {
-        min-height: auto;
-      }
-    }
-  </style>
+@media(min-width:701px){
+  .page{
+    min-height:auto;
+  }
+}
+</style>
 </head>
 
 <body>
 
-  <div class="page">
+<div class="page">
 
-    <label class="upload-click">
-      <input
-        id="fileInput"
-        type="file"
-        multiple
-        accept="image/jpeg,image/png,image/webp,image/gif,video/mp4"
-      >
-    </label>
+  <label class="upload-click">
+    <input
+      id="fileInput"
+      type="file"
+      multiple
+      accept="image/jpeg,image/png,image/webp,image/gif,video/mp4"
+    >
+  </label>
 
-    <div id="statusBox" class="status-box"></div>
+  <div id="statusBox" class="status-box"></div>
 
-  </div>
+</div>
 
-  <script>
-    const SUPABASE_URL =
-      "https://gdbvwzwkguankzabjlup.supabase.co";
+<script>
+const SUPABASE_URL = "https://gdbvwzwkguankzabjlup.supabase.co";
 
-    const SUPABASE_KEY =
-      "KLISTRA_IN_DIN_PUBLISHABLE_KEY_HAR";
+const SUPABASE_KEY =
+  "sb_publishable_JyHn5_XGnNmqnQSQM4h2Zw_WwGbKeBE";
 
-    const BUCKET = "wedding-uploads";
+const BUCKET = "wedding-uploads";
 
-    const MAX_FILE_SIZE = 50 * 1024 * 1024;
+const MAX_FILE_SIZE = 50 * 1024 * 1024;
 
-    const allowedTypes = [
-      "image/jpeg",
-      "image/png",
-      "image/webp",
-      "image/gif",
-      "video/mp4"
-    ];
+const ALLOWED_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+  "video/mp4"
+];
 
-    const fileInput = document.getElementById("fileInput");
-    const statusBox = document.getElementById("statusBox");
+const fileInput = document.getElementById("fileInput");
+const statusBox = document.getElementById("statusBox");
 
-    function showStatus(message, type = "") {
-      statusBox.className = "status-box show";
+function showStatus(message, type = ""){
+  statusBox.className = "status-box show";
 
-      if (type) {
-        statusBox.classList.add(type);
-      }
+  if(type){
+    statusBox.classList.add(type);
+  }
 
-      statusBox.textContent = message;
+  statusBox.textContent = message;
+}
+
+function cleanFileName(fileName){
+  return fileName
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/[^a-zA-Z0-9._-]/g, "")
+    .toLowerCase();
+}
+
+function createFilePath(fileName){
+  const cleanedName = cleanFileName(fileName);
+
+  const uniqueId =
+    Date.now() + "-" + Math.random().toString(36).slice(2, 10);
+
+  return `brollop/${uniqueId}-${cleanedName}`;
+}
+
+async function uploadFile(file){
+  const path = createFilePath(file.name);
+
+  const uploadUrl =
+    `${SUPABASE_URL}/storage/v1/object/${BUCKET}/${path}`;
+
+  const response = await fetch(uploadUrl, {
+    method: "POST",
+    headers: {
+      "apikey": SUPABASE_KEY,
+      "Content-Type": file.type || "application/octet-stream",
+      "x-upsert": "false"
+    },
+    body: file
+  });
+
+  const responseText = await response.text();
+
+  let responseData = null;
+
+  try{
+    responseData = JSON.parse(responseText);
+  }catch{
+    responseData = null;
+  }
+
+  if(!response.ok){
+    const errorMessage =
+      responseData?.message ||
+      responseData?.error ||
+      responseText ||
+      `Uppladdningen misslyckades. Felkod ${response.status}.`;
+
+    throw new Error(errorMessage);
+  }
+
+  return path;
+}
+
+fileInput.addEventListener("change", async () => {
+  const files = Array.from(fileInput.files || []);
+
+  if(files.length === 0){
+    return;
+  }
+
+  for(const file of files){
+
+    if(!ALLOWED_TYPES.includes(file.type)){
+      showStatus(
+        `❌ Filtypen stöds inte: ${file.name}`,
+        "error"
+      );
+
+      fileInput.value = "";
+      return;
     }
 
-    function cleanFileName(fileName) {
-      return fileName
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/\s+/g, "-")
-        .replace(/[^a-zA-Z0-9._-]/g, "")
-        .toLowerCase();
+    if(file.size > MAX_FILE_SIZE){
+      showStatus(
+        `❌ ${file.name} är större än 50 MB.`,
+        "error"
+      );
+
+      fileInput.value = "";
+      return;
+    }
+  }
+
+  let uploaded = 0;
+
+  try{
+
+    showStatus(
+      `⏳ Förbereder uppladdning av ${files.length} fil(er)...`
+    );
+
+    for(const file of files){
+
+      showStatus(
+        `⏳ Laddar upp ${uploaded + 1} av ${files.length}: ${file.name}`
+      );
+
+      await uploadFile(file);
+
+      uploaded++;
     }
 
-    function createUniquePath(fileName) {
-      const cleanedName = cleanFileName(fileName);
-      const uniqueId =
-        Date.now() + "-" + Math.random().toString(36).slice(2, 10);
+    showStatus(
+      `✅ Tack! ${uploaded} fil(er) har laddats upp.`,
+      "success"
+    );
 
-      return `brollop/${uniqueId}-${cleanedName}`;
-    }
+  }catch(error){
 
-    async function uploadFile(file) {
-      const path = createUniquePath(file.name);
+    console.error("Supabase upload error:", error);
 
-      const uploadUrl =
-        `${SUPABASE_URL}/storage/v1/object/${BUCKET}/${path}`;
+    showStatus(
+      `❌ Fel: ${error.message}`,
+      "error"
+    );
 
-      const response = await fetch(uploadUrl, {
-        method: "POST",
-
-        headers: {
-          "apikey": SUPABASE_KEY,
-          "Authorization": `Bearer ${SUPABASE_KEY}`,
-          "Content-Type": file.type,
-          "x-upsert": "false"
-        },
-
-        body: file
-      });
-
-      let responseData;
-
-      try {
-        responseData = await response.json();
-      } catch {
-        responseData = null;
-      }
-
-      if (!response.ok) {
-        const errorMessage =
-          responseData?.message ||
-          responseData?.error ||
-          `Uppladdningen misslyckades. Felkod: ${response.status}`;
-
-        throw new Error(errorMessage);
-      }
-
-      return path;
-    }
-
-    fileInput.addEventListener("change", async function () {
-      const files = Array.from(fileInput.files || []);
-
-      if (files.length === 0) {
-        return;
-      }
-
-      if (
-        !SUPABASE_KEY ||
-        SUPABASE_KEY === "KLISTRA_IN_DIN_PUBLISHABLE_KEY_HAR"
-      ) {
-        showStatus(
-          "❌ Supabase Publishable key saknas i koden.",
-          "error"
-        );
-
-        fileInput.value = "";
-        return;
-      }
-
-      for (const file of files) {
-        if (!allowedTypes.includes(file.type)) {
-          showStatus(
-            `❌ Filtypen stöds inte: ${file.name}`,
-            "error"
-          );
-
-          fileInput.value = "";
-          return;
-        }
-
-        if (file.size > MAX_FILE_SIZE) {
-          showStatus(
-            `❌ ${file.name} är större än 50 MB.`,
-            "error"
-          );
-
-          fileInput.value = "";
-          return;
-        }
-      }
-
-      let uploadedCount = 0;
-
-      try {
-        showStatus(
-          `⏳ Förbereder uppladdning av ${files.length} fil(er)...`
-        );
-
-        for (const file of files) {
-          showStatus(
-            `⏳ Laddar upp ${uploadedCount + 1} av ${files.length}: ${file.name}`
-          );
-
-          await uploadFile(file);
-
-          uploadedCount++;
-        }
-
-        showStatus(
-          `✅ Tack! ${uploadedCount} fil(er) har laddats upp.`,
-          "success"
-        );
-
-      } catch (error) {
-        console.error("Supabase upload error:", error);
-
-        showStatus(
-          `❌ Fel: ${error.message}`,
-          "error"
-        );
-      } finally {
-        fileInput.value = "";
-      }
-    });
-  </script>
+  }finally{
+    fileInput.value = "";
+  }
+});
+</script>
 
 </body>
 </html>
