@@ -32,17 +32,18 @@ body{
   background:url("background.jpeg") center top / 100% auto no-repeat;
 }
 
-/* Fungerande QR-kod ovanpå den gamla */
+/* QR-koden placerad inne i den befintliga QR-rutan */
 .qr-overlay{
   position:absolute;
-  left:66.6%;
-  top:38.5%;
-  width:25.2%;
+  left:66.5%;
+  top:40.6%;
+  width:22%;
   aspect-ratio:1 / 1;
   object-fit:contain;
-  background:#f8f2e8;
-  padding:1.4%;
-  border-radius:4%;
+  display:block;
+  background:#fffaf2;
+  padding:0.6%;
+  border-radius:3%;
   z-index:40;
 }
 
@@ -144,41 +145,41 @@ const ALLOWED_TYPES = [
 const fileInput = document.getElementById("fileInput");
 const statusBox = document.getElementById("statusBox");
 
-function showStatus(message, type = ""){
-  statusBox.className = "status-box show";
+function showStatus(message,type=""){
+  statusBox.className="status-box show";
 
   if(type){
     statusBox.classList.add(type);
   }
 
-  statusBox.textContent = message;
+  statusBox.textContent=message;
 }
 
 function cleanFileName(fileName){
   return fileName
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/\s+/g, "-")
-    .replace(/[^a-zA-Z0-9._-]/g, "")
+    .replace(/[\u0300-\u036f]/g,"")
+    .replace(/\s+/g,"-")
+    .replace(/[^a-zA-Z0-9._-]/g,"")
     .toLowerCase();
 }
 
 function createFilePath(fileName){
-  const cleanedName = cleanFileName(fileName);
+  const cleanedName=cleanFileName(fileName);
 
-  const uniqueId =
-    Date.now() + "-" + Math.random().toString(36).slice(2,10);
+  const uniqueId=
+    Date.now()+"-"+Math.random().toString(36).slice(2,10);
 
   return `brollop/${uniqueId}-${cleanedName}`;
 }
 
 async function uploadFile(file){
-  const path = createFilePath(file.name);
+  const path=createFilePath(file.name);
 
-  const uploadUrl =
+  const uploadUrl=
     `${SUPABASE_URL}/storage/v1/object/${BUCKET}/${path}`;
 
-  const response = await fetch(uploadUrl,{
+  const response=await fetch(uploadUrl,{
     method:"POST",
 
     headers:{
@@ -190,18 +191,18 @@ async function uploadFile(file){
     body:file
   });
 
-  const responseText = await response.text();
+  const responseText=await response.text();
 
-  let responseData = null;
+  let responseData=null;
 
   try{
-    responseData = JSON.parse(responseText);
+    responseData=JSON.parse(responseText);
   }catch{
-    responseData = null;
+    responseData=null;
   }
 
   if(!response.ok){
-    const errorMessage =
+    const errorMessage=
       responseData?.message ||
       responseData?.error ||
       responseText ||
@@ -214,9 +215,9 @@ async function uploadFile(file){
 }
 
 fileInput.addEventListener("change",async()=>{
-  const files = Array.from(fileInput.files || []);
+  const files=Array.from(fileInput.files || []);
 
-  if(files.length === 0){
+  if(files.length===0){
     return;
   }
 
@@ -228,22 +229,22 @@ fileInput.addEventListener("change",async()=>{
         "error"
       );
 
-      fileInput.value = "";
+      fileInput.value="";
       return;
     }
 
-    if(file.size > MAX_FILE_SIZE){
+    if(file.size>MAX_FILE_SIZE){
       showStatus(
         `❌ ${file.name} är större än 50 MB.`,
         "error"
       );
 
-      fileInput.value = "";
+      fileInput.value="";
       return;
     }
   }
 
-  let uploaded = 0;
+  let uploaded=0;
 
   try{
     showStatus(
@@ -253,7 +254,7 @@ fileInput.addEventListener("change",async()=>{
     for(const file of files){
 
       showStatus(
-        `⏳ Laddar upp ${uploaded + 1} av ${files.length}: ${file.name}`
+        `⏳ Laddar upp ${uploaded+1} av ${files.length}: ${file.name}`
       );
 
       await uploadFile(file);
@@ -276,7 +277,7 @@ fileInput.addEventListener("change",async()=>{
     );
 
   }finally{
-    fileInput.value = "";
+    fileInput.value="";
   }
 });
 </script>
