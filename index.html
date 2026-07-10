@@ -32,10 +32,7 @@ body{
   background:url("background.jpeg") center top / 100% auto no-repeat;
 }
 
-/*
-  Ljus ruta som täcker den gamla QR-koden.
-  Den är placerad mitt i det högra kortet.
-*/
+/* Ljus ruta som täcker den gamla QR-koden */
 .qr-cover{
   position:absolute;
   left:64.6%;
@@ -54,19 +51,15 @@ body{
   z-index:40;
 }
 
-/*
-  QR-koden är mindre och exakt centrerad.
-  Flexbox ger samma avstånd på båda sidorna.
-*/
+/* Mindre QR-kod, exakt centrerad */
 .qr-overlay{
   display:block;
-  width:58%;
+  width:46%;
   height:auto;
-  max-width:58%;
-  margin:0;
+  max-width:46%;
+  margin:0 auto;
   padding:0;
   object-fit:contain;
-  transform:none;
 }
 
 /* Klickområdet ovanpå knappen VÄLJ FILER */
