@@ -32,29 +32,38 @@ body{
   background:url("background.jpeg") center top / 100% auto no-repeat;
 }
 
-/* Täcker hela den gamla QR-koden */
+/*
+  Den ljusa rutan täcker den gamla QR-koden.
+  Rutan ligger centrerad i högra kortet.
+*/
 .qr-cover{
   position:absolute;
-  left:63.8%;
-  top:41.4%;
-  width:27.5%;
+  left:65.4%;
+  top:41.5%;
+  width:24%;
   aspect-ratio:1 / 1;
   background:#fffaf2;
   border-radius:7%;
   z-index:39;
+
   display:flex;
   justify-content:center;
   align-items:center;
+
   box-shadow:0 4px 14px rgba(0,0,0,.05);
 }
 
-/* Ny fungerande QR-kod – lite mindre och åt vänster */
+/*
+  QR-koden är mindre och exakt centrerad.
+  Samma mellanrum på vänster och höger sida.
+*/
 .qr-overlay{
-  width:82%;
-  height:82%;
   display:block;
+  width:74%;
+  height:74%;
   object-fit:contain;
-  transform:translateX(-4%);
+  margin:0;
+  padding:0;
 }
 
 /* Klickområdet ovanpå knappen VÄLJ FILER */
