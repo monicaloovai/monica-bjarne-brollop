@@ -32,7 +32,7 @@ body{
   background:url("background.jpeg") center top / 100% auto no-repeat;
 }
 
-/* Täcker hela den gamla QR-koden och de svarta linjerna */
+/* Täcker hela den gamla QR-koden */
 .qr-cover{
   position:absolute;
   left:63.8%;
@@ -45,16 +45,16 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
-  padding:3.2%;
   box-shadow:0 4px 14px rgba(0,0,0,.05);
 }
 
-/* Ny fungerande QR-kod */
+/* Ny fungerande QR-kod – lite mindre och åt vänster */
 .qr-overlay{
-  width:100%;
-  height:100%;
+  width:82%;
+  height:82%;
   display:block;
   object-fit:contain;
+  transform:translateX(-4%);
 }
 
 /* Klickområdet ovanpå knappen VÄLJ FILER */
