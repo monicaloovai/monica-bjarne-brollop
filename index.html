@@ -34,38 +34,39 @@ body{
 
 /*
   Ljus ruta som täcker den gamla QR-koden.
-  Rutan ligger centrerad i det högra kortet.
+  Den är placerad mitt i det högra kortet.
 */
 .qr-cover{
   position:absolute;
-  left:63.7%;
-  top:39.8%;
-  width:27.4%;
-  height:20.2%;
+  left:64.6%;
+  top:39.9%;
+  width:25.8%;
+  height:20.3%;
 
   display:flex;
   justify-content:center;
   align-items:center;
 
   background:#fffaf2;
-  border-radius:6%;
+  border-radius:7%;
   box-shadow:0 5px 16px rgba(0,0,0,.06);
   overflow:hidden;
   z-index:40;
 }
 
 /*
-  Den nya QR-koden.
-  Mindre och exakt centrerad med lika avstånd
-  på vänster och höger sida.
+  QR-koden är mindre och exakt centrerad.
+  Flexbox ger samma avstånd på båda sidorna.
 */
 .qr-overlay{
   display:block;
-  width:64%;
+  width:58%;
   height:auto;
-  max-width:64%;
+  max-width:58%;
+  margin:0;
+  padding:0;
   object-fit:contain;
-  margin:0 auto;
+  transform:none;
 }
 
 /* Klickområdet ovanpå knappen VÄLJ FILER */
@@ -83,7 +84,7 @@ body{
   display:none;
 }
 
-/* Meddelande vid uppladdning */
+/* Meddelanderutan för uppladdning */
 .status-box{
   position:absolute;
   left:8%;
