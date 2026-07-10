@@ -32,31 +32,38 @@ body{
   background:url("background.jpeg") center top / 100% auto no-repeat;
 }
 
-/* Ljus ruta som täcker den gamla QR-koden */
+/*
+  Den ljusa rutan är nu mindre.
+  Den är centrerad med samma avstånd
+  på vänster och höger sida i högra kortet.
+*/
 .qr-cover{
   position:absolute;
-  left:64.6%;
-  top:39.9%;
-  width:25.8%;
-  height:20.3%;
+  left:67.4%;
+  top:41.1%;
+  width:20.5%;
+  height:15.5%;
 
   display:flex;
   justify-content:center;
   align-items:center;
 
   background:#fffaf2;
-  border-radius:7%;
+  border-radius:8%;
   box-shadow:0 5px 16px rgba(0,0,0,.06);
   overflow:hidden;
   z-index:40;
 }
 
-/* Mindre QR-kod, exakt centrerad */
+/*
+  QR-koden behåller en tydlig storlek
+  och är exakt centrerad i den mindre rutan.
+*/
 .qr-overlay{
   display:block;
-  width:46%;
+  width:72%;
   height:auto;
-  max-width:46%;
+  max-width:72%;
   margin:0 auto;
   padding:0;
   object-fit:contain;
