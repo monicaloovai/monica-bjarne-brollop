@@ -42,18 +42,16 @@ body{
 }
 
 /*
-  QR-rutan centreras med sin mittpunkt.
-  transform gör att vänster och höger sida blir jämna.
+  Den nya ljusa rutan täcker hela den gamla QR-rutan,
+  inklusive kanten på vänster sida.
 */
 .qr-cover{
   position:absolute;
 
-  left:77.1%;
+  left:61.2%;
   top:42.4%;
 
-  transform:translateX(-50%);
-
-  width:23.4%;
+  width:28.5%;
   height:16.8%;
 
   display:flex;
@@ -70,9 +68,11 @@ body{
   z-index:40;
 }
 
-/* Själva QR-koden */
+/*
+  QR-koden centreras inuti den ljusa rutan.
+*/
 #qrcode{
-  width:66%;
+  width:56%;
   aspect-ratio:1 / 1;
 
   display:flex;
@@ -82,7 +82,9 @@ body{
   overflow:hidden;
 }
 
-/* Visa QR-kodens canvas */
+/*
+  Visa bara canvas-versionen av QR-koden.
+*/
 #qrcode canvas{
   display:block !important;
 
@@ -93,12 +95,16 @@ body{
   padding:0 !important;
 }
 
-/* Dölj eventuell extra bildversion */
+/*
+  Dölj eventuell extra bildversion.
+*/
 #qrcode img{
   display:none !important;
 }
 
-/* Klickbart område ovanpå knappen VÄLJ FILER */
+/*
+  Klickbart område ovanpå knappen VÄLJ FILER.
+*/
 .upload-click{
   position:absolute;
 
@@ -123,7 +129,9 @@ body{
   cursor:pointer;
 }
 
-/* Meddelande under uppladdningen */
+/*
+  Statusmeddelande vid uppladdning.
+*/
 .status-box{
   position:absolute;
 
@@ -139,9 +147,14 @@ body{
   box-shadow:
     0 5px 18px rgba(0,0,0,.15);
 
-  font-family:Arial,Helvetica,sans-serif;
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
   font-size:13px;
   line-height:1.4;
+
   color:#222;
 
   display:none;
@@ -168,6 +181,7 @@ body{
 }
 
 @media(max-width:700px){
+
   .status-box{
     padding:8px;
     font-size:11px;
@@ -181,7 +195,7 @@ body{
 
 <div class="page">
 
-  <!-- Automatiskt skapad QR-kod -->
+  <!-- QR-koden -->
   <div class="qr-cover">
     <div
       id="qrcode"
@@ -211,7 +225,7 @@ body{
 
 </div>
 
-<!-- Bibliotek för att skapa QR-koden -->
+<!-- Bibliotek som skapar QR-koden -->
 <script
   src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"
 ></script>
@@ -246,8 +260,11 @@ const fileInput =
 const statusBox =
   document.getElementById("statusBox");
 
-/* Skapa QR-koden */
+/*
+  Skapa QR-koden.
+*/
 function createQRCode(){
+
   const qrContainer =
     document.getElementById("qrcode");
 
@@ -264,14 +281,23 @@ function createQRCode(){
 }
 
 if(typeof QRCode !== "undefined"){
+
   createQRCode();
+
 }else{
+
   document.getElementById("qrcode").textContent =
     "QR-koden kunde inte laddas.";
 }
 
-/* Visa statusmeddelande */
-function showStatus(message,type="loading"){
+/*
+  Visa statusmeddelande.
+*/
+function showStatus(
+  message,
+  type="loading"
+){
+
   statusBox.className =
     "status-box show";
 
@@ -283,8 +309,11 @@ function showStatus(message,type="loading"){
     message;
 }
 
-/* Rensa filnamnet */
+/*
+  Rensa filnamnet.
+*/
 function cleanFileName(fileName){
+
   return fileName
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g,"")
@@ -293,8 +322,11 @@ function cleanFileName(fileName){
     .toLowerCase();
 }
 
-/* Skapa unik sökväg för filen */
+/*
+  Skapa unik filsökväg.
+*/
 function createFilePath(fileName){
+
   const cleanedName =
     cleanFileName(fileName);
 
@@ -308,8 +340,11 @@ function createFilePath(fileName){
   return `brollop/${uniqueId}-${cleanedName}`;
 }
 
-/* Ladda upp en fil till Supabase */
+/*
+  Ladda upp en fil till Supabase.
+*/
 async function uploadFile(file){
+
   const path =
     createFilePath(file.name);
 
@@ -317,20 +352,29 @@ async function uploadFile(file){
     `${SUPABASE_URL}/storage/v1/object/${BUCKET}/${path}`;
 
   const response =
-    await fetch(uploadUrl,{
-      method:"POST",
+    await fetch(
+      uploadUrl,
+      {
+        method:"POST",
 
-      headers:{
-        "apikey":SUPABASE_KEY,
-        "Authorization":`Bearer ${SUPABASE_KEY}`,
-        "Content-Type":
-          file.type ||
-          "application/octet-stream",
-        "x-upsert":"false"
-      },
+        headers:{
+          "apikey":
+            SUPABASE_KEY,
 
-      body:file
-    });
+          "Authorization":
+            `Bearer ${SUPABASE_KEY}`,
+
+          "Content-Type":
+            file.type ||
+            "application/octet-stream",
+
+          "x-upsert":
+            "false"
+        },
+
+        body:file
+      }
+    );
 
   const responseText =
     await response.text();
@@ -338,13 +382,18 @@ async function uploadFile(file){
   let responseData = null;
 
   try{
+
     responseData =
       JSON.parse(responseText);
+
   }catch{
+
     responseData = null;
+
   }
 
   if(!response.ok){
+
     const errorMessage =
       responseData?.message ||
       responseData?.error ||
@@ -357,75 +406,92 @@ async function uploadFile(file){
   return path;
 }
 
-/* När gästen väljer filer */
-fileInput.addEventListener("change",async()=>{
-  const files =
-    Array.from(fileInput.files || []);
+/*
+  När gästen väljer filer.
+*/
+fileInput.addEventListener(
+  "change",
+  async()=>{
 
-  if(files.length === 0){
-    return;
-  }
+    const files =
+      Array.from(fileInput.files || []);
 
-  for(const file of files){
-    if(!ALLOWED_TYPES.includes(file.type)){
-      showStatus(
-        `❌ Filtypen stöds inte: ${file.name}`,
-        "error"
-      );
-
-      fileInput.value = "";
+    if(files.length === 0){
       return;
     }
-
-    if(file.size > MAX_FILE_SIZE){
-      showStatus(
-        `❌ ${file.name} är större än 100 MB.`,
-        "error"
-      );
-
-      fileInput.value = "";
-      return;
-    }
-  }
-
-  let uploaded = 0;
-
-  try{
-    showStatus(
-      `⏳ Förbereder uppladdning av ${files.length} fil(er)...`,
-      "loading"
-    );
 
     for(const file of files){
+
+      if(!ALLOWED_TYPES.includes(file.type)){
+
+        showStatus(
+          `❌ Filtypen stöds inte: ${file.name}`,
+          "error"
+        );
+
+        fileInput.value = "";
+
+        return;
+      }
+
+      if(file.size > MAX_FILE_SIZE){
+
+        showStatus(
+          `❌ ${file.name} är större än 100 MB.`,
+          "error"
+        );
+
+        fileInput.value = "";
+
+        return;
+      }
+    }
+
+    let uploaded = 0;
+
+    try{
+
       showStatus(
-        `⏳ Laddar upp ${uploaded + 1} av ${files.length}: ${file.name}`,
+        `⏳ Förbereder uppladdning av ${files.length} fil(er)...`,
         "loading"
       );
 
-      await uploadFile(file);
-      uploaded++;
+      for(const file of files){
+
+        showStatus(
+          `⏳ Laddar upp ${uploaded + 1} av ${files.length}: ${file.name}`,
+          "loading"
+        );
+
+        await uploadFile(file);
+
+        uploaded++;
+      }
+
+      showStatus(
+        `✅ Tack! ${uploaded} fil(er) har laddats upp.`,
+        "success"
+      );
+
+    }catch(error){
+
+      console.error(
+        "Supabase upload error:",
+        error
+      );
+
+      showStatus(
+        `❌ Fel: ${error.message}`,
+        "error"
+      );
+
+    }finally{
+
+      fileInput.value = "";
+
     }
-
-    showStatus(
-      `✅ Tack! ${uploaded} fil(er) har laddats upp.`,
-      "success"
-    );
-
-  }catch(error){
-    console.error(
-      "Supabase upload error:",
-      error
-    );
-
-    showStatus(
-      `❌ Fel: ${error.message}`,
-      "error"
-    );
-
-  }finally{
-    fileInput.value = "";
   }
-});
+);
 </script>
 
 </body>
