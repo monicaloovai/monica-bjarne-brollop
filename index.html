@@ -42,52 +42,66 @@ body{
 }
 
 /*
-  Mindre QR-ruta som ligger längre ned,
-  så texten ovanför syns.
+  Den ljusa rutan bakom QR-koden.
+  Den ligger under texten "Öppna sidan direkt i mobilen".
 */
 .qr-cover{
   position:absolute;
 
-  left:67.2%;
-  top:43.2%;
+  left:65.5%;
+  top:42.4%;
 
-  width:19.8%;
-  height:14.8%;
+  width:24%;
+  height:16.8%;
 
   display:flex;
   justify-content:center;
   align-items:center;
 
   background:#fffaf2;
-  border-radius:7%;
+  border-radius:8%;
 
   box-shadow:
-    0 5px 16px rgba(0,0,0,.07);
+    0 5px 16px rgba(0,0,0,.08);
 
   overflow:hidden;
   z-index:40;
 }
 
 /*
-  Själva QR-koden.
+  Behållaren för QR-koden.
 */
 #qrcode{
-  width:72%;
+  width:68%;
   aspect-ratio:1 / 1;
 
   display:flex;
   justify-content:center;
   align-items:center;
+
+  overflow:hidden;
 }
 
-#qrcode img,
+/*
+  Visa endast canvas-versionen av QR-koden.
+  Detta tar bort den extra linjen/bilden.
+*/
 #qrcode canvas{
-  display:block;
+  display:block !important;
 
   width:100% !important;
   height:100% !important;
 
-  object-fit:contain;
+  margin:0 !important;
+  padding:0 !important;
+}
+
+/*
+  Dölj den extra bildversionen
+  som QR-biblioteket ibland skapar.
+*/
+#qrcode img{
+  display:none !important;
 }
 
 /*
@@ -190,7 +204,7 @@ body{
     ></div>
   </div>
 
-  <!-- Klickområde för filuppladdning -->
+  <!-- Klickområde ovanpå VÄLJ FILER -->
   <label
     class="upload-click"
     aria-label="Välj bilder eller videor"
@@ -248,7 +262,7 @@ const statusBox =
   document.getElementById("statusBox");
 
 /*
-  Skapar QR-koden automatiskt.
+  Skapa QR-koden automatiskt.
 */
 function createQRCode(){
 
@@ -261,7 +275,7 @@ function createQRCode(){
     text:QR_TARGET_URL,
     width:400,
     height:400,
-    colorDark:"#2f2f2f",
+    colorDark:"#303030",
     colorLight:"#fffaf2",
     correctLevel:QRCode.CorrectLevel.H
   });
@@ -273,14 +287,12 @@ if(typeof QRCode !== "undefined"){
 
 }else{
 
-  document.getElementById(
-    "qrcode"
-  ).textContent =
+  document.getElementById("qrcode").textContent =
     "QR-koden kunde inte laddas.";
 }
 
 /*
-  Visar statusmeddelande.
+  Visa uppladdningsmeddelande.
 */
 function showStatus(
   message,
@@ -291,9 +303,7 @@ function showStatus(
     "status-box show";
 
   if(type){
-
     statusBox.classList.add(type);
-
   }
 
   statusBox.textContent =
@@ -301,7 +311,7 @@ function showStatus(
 }
 
 /*
-  Rensar filnamnet.
+  Rensa filnamnet.
 */
 function cleanFileName(fileName){
 
@@ -323,7 +333,7 @@ function cleanFileName(fileName){
 }
 
 /*
-  Skapar ett unikt filnamn.
+  Skapa ett unikt filnamn.
 */
 function createFilePath(fileName){
 
@@ -337,13 +347,11 @@ function createFilePath(fileName){
       .toString(36)
       .slice(2,10);
 
-  return (
-    `brollop/${uniqueId}-${cleanedName}`
-  );
+  return `brollop/${uniqueId}-${cleanedName}`;
 }
 
 /*
-  Laddar upp en fil till Supabase.
+  Ladda upp en fil till Supabase.
 */
 async function uploadFile(file){
 
@@ -402,9 +410,7 @@ async function uploadFile(file){
       responseText ||
       `Uppladdningen misslyckades. Felkod ${response.status}.`;
 
-    throw new Error(
-      errorMessage
-    );
+    throw new Error(errorMessage);
   }
 
   return path;
@@ -423,13 +429,11 @@ fileInput.addEventListener(
       );
 
     if(files.length === 0){
-
       return;
-
     }
 
     /*
-      Kontrollera filer.
+      Kontrollera filtyp och storlek.
     */
     for(const file of files){
 
@@ -449,10 +453,7 @@ fileInput.addEventListener(
         return;
       }
 
-      if(
-        file.size >
-        MAX_FILE_SIZE
-      ){
+      if(file.size > MAX_FILE_SIZE){
 
         showStatus(
           `❌ ${file.name} är större än 100 MB.`,
