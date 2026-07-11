@@ -42,8 +42,8 @@ body{
 }
 
 /*
-  Den ljusa rutan är bredare åt både vänster och höger.
-  Den centreras med sin mittpunkt.
+  Den ljusa rutan täcker området bakom
+  på både vänster och höger sida.
 */
 .qr-cover{
   position:absolute;
@@ -71,10 +71,10 @@ body{
 }
 
 /*
-  QR-koden centreras i den ljusa rutan.
+  Själva QR-koden är nu lite mindre.
 */
 #qrcode{
-  width:54%;
+  width:47%;
   aspect-ratio:1 / 1;
 
   display:flex;
@@ -85,7 +85,7 @@ body{
 }
 
 /*
-  Visa endast canvas-versionen.
+  Visa bara canvas-versionen.
 */
 #qrcode canvas{
   display:block !important;
