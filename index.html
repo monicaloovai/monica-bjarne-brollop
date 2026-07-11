@@ -5,329 +5,109 @@
 
   <meta
     name="viewport"
-    content="width=device-width, initial-scale=1.0"
+    content="width=device-width, initial-scale=1.0, maximum-scale=5.0"
   >
 
-  <title>Monica & Bjarne – Bröllopsminnen</title>
+  <title>Monica & Bjarne</title>
 
   <style>
     * {
       box-sizing: border-box;
     }
 
-    html {
-      scroll-behavior: smooth;
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background: #eee4d8;
+      font-family: Arial, Helvetica, sans-serif;
     }
 
     body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: Georgia, "Times New Roman", serif;
-      color: #343130;
-      background:
-        linear-gradient(
-          rgba(239, 231, 220, 0.75),
-          rgba(224, 213, 198, 0.8)
-        ),
-        #e9dfd2;
-    }
-
-    button,
-    input {
-      font: inherit;
-    }
-
-    .page {
-      width: min(1180px, 100%);
-      margin: 0 auto;
-      padding: 34px 20px 50px;
-    }
-
-    .hero {
-      text-align: center;
-      margin-bottom: 25px;
-    }
-
-    .hero-small {
-      margin: 0 0 7px;
-      font-size: 13px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: #897667;
-    }
-
-    .hero h1 {
-      margin: 0;
-      font-size: clamp(36px, 7vw, 70px);
-      font-weight: normal;
-      line-height: 1;
-    }
-
-    .hero-date {
-      margin: 13px 0 0;
-      font-size: 17px;
-      color: #77695f;
-    }
-
-    .main-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.55fr) minmax(300px, 0.85fr);
-      gap: 23px;
-      align-items: stretch;
-    }
-
-    .card {
-      background: rgba(255, 252, 247, 0.91);
-      border: 1px solid rgba(107, 89, 73, 0.16);
-      border-radius: 20px;
-      box-shadow: 0 15px 45px rgba(67, 53, 41, 0.12);
-    }
-
-    .upload-card {
-      padding: clamp(25px, 5vw, 55px);
-      text-align: center;
-    }
-
-    .upload-icon {
-      width: 72px;
-      height: 72px;
-      margin: 0 auto 15px;
-      color: #866f5e;
-    }
-
-    .upload-icon svg {
-      width: 100%;
-      height: 100%;
-      stroke: currentColor;
-    }
-
-    h2 {
-      margin: 0;
-      font-size: clamp(24px, 4vw, 36px);
-      font-weight: normal;
-      letter-spacing: 1px;
-    }
-
-    .intro {
-      margin: 13px auto 27px;
-      max-width: 570px;
-      color: #6b625c;
-      font-family: Arial, Helvetica, sans-serif;
-      font-size: 16px;
-      line-height: 1.55;
-    }
-
-    .drop-zone {
-      min-height: 285px;
-      padding: 40px 20px;
-      border: 2px dashed #b5a699;
-      border-radius: 18px;
-      background: rgba(255, 255, 255, 0.52);
       display: flex;
-      flex-direction: column;
-      align-items: center;
       justify-content: center;
-      transition:
-        border-color 0.2s ease,
-        background 0.2s ease,
-        transform 0.2s ease;
-      cursor: pointer;
+      align-items: flex-start;
     }
 
-    .drop-zone:hover,
-    .drop-zone.dragging {
-      border-color: #856c58;
-      background: rgba(247, 239, 229, 0.95);
-      transform: translateY(-2px);
-    }
-
-    .file-icon {
-      width: 47px;
-      height: 47px;
-      margin-bottom: 14px;
-      color: #735f50;
-    }
-
-    .file-icon svg {
+    /*
+      Hela originaldesignen ligger i background.jpeg.
+      Bildens format är 1024 × 1536.
+    */
+    .page {
+      position: relative;
       width: 100%;
-      height: 100%;
-      stroke: currentColor;
+      max-width: 1024px;
+      aspect-ratio: 1024 / 1536;
+
+      background-image: url("background.jpeg");
+      background-position: center top;
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+
+      overflow: hidden;
     }
 
-    .drop-title {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      font-size: 18px;
-      font-weight: 700;
-    }
+    /*
+      Osynligt klickområde ovanpå den streckade
+      uppladdningsrutan i originaldesignen.
+    */
+    .upload-area {
+      position: absolute;
+      left: 10.8%;
+      top: 45.1%;
+      width: 45.3%;
+      height: 13.7%;
 
-    .drop-subtitle {
-      margin: 7px 0 20px;
-      font-family: Arial, Helvetica, sans-serif;
-      font-size: 15px;
-      color: #6e6560;
-    }
-
-    .choose-button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 145px;
-      min-height: 48px;
-      padding: 11px 24px;
-      border: 0;
-      border-radius: 7px;
-      background: #9a775e;
-      color: #fff;
-      font-family: Arial, Helvetica, sans-serif;
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 0.8px;
+      z-index: 20;
       cursor: pointer;
-      box-shadow: 0 7px 18px rgba(85, 61, 43, 0.2);
+      border-radius: 14px;
     }
 
-    .choose-button:hover {
-      background: #80604a;
+    .upload-area:hover {
+      background: rgba(255, 255, 255, 0.08);
     }
 
-    .file-rules {
-      margin: 19px 0 0;
-      font-family: Arial, Helvetica, sans-serif;
-      font-size: 13px;
-      color: #6f6863;
+    .upload-area.dragging {
+      background: rgba(187, 145, 72, 0.15);
+      outline: 2px dashed rgba(164, 121, 48, 0.7);
+      outline-offset: -5px;
     }
 
     #fileInput {
       display: none;
     }
 
-    .upload-list {
-      display: none;
-      margin-top: 22px;
-      text-align: left;
-    }
+    /*
+      Ljus ruta som täcker QR-koden i bakgrundsbilden.
+      Den riktiga fungerande QR-koden läggs ovanpå.
+    */
+    .qr-cover {
+      position: absolute;
+      left: 64.9%;
+      top: 42.85%;
+      width: 23.1%;
+      aspect-ratio: 1 / 1;
 
-    .upload-list.show {
-      display: block;
-    }
-
-    .file-row {
-      margin-top: 10px;
-      padding: 13px 15px;
-      border: 1px solid rgba(112, 94, 80, 0.18);
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.68);
-      font-family: Arial, Helvetica, sans-serif;
-    }
-
-    .file-row-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 15px;
-      align-items: center;
-    }
-
-    .file-name {
-      min-width: 0;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      font-size: 14px;
-      font-weight: 700;
-    }
-
-    .file-state {
-      flex-shrink: 0;
-      font-size: 13px;
-      color: #766b63;
-    }
-
-    .progress-track {
-      width: 100%;
-      height: 6px;
-      margin-top: 11px;
-      overflow: hidden;
-      border-radius: 20px;
-      background: #ded4cb;
-    }
-
-    .progress-bar {
-      width: 0;
-      height: 100%;
-      border-radius: inherit;
-      background: #9b7961;
-      transition: width 0.25s ease;
-    }
-
-    .status {
-      display: none;
-      margin-top: 20px;
-      padding: 16px;
-      border-radius: 12px;
-      font-family: Arial, Helvetica, sans-serif;
-      line-height: 1.45;
-    }
-
-    .status.show {
-      display: block;
-    }
-
-    .status.loading {
-      color: #594b41;
-      background: #f3ece4;
-      border: 1px solid #d4c3b4;
-    }
-
-    .status.success {
-      color: #2f6743;
-      background: #edf7f0;
-      border: 1px solid #bcd8c4;
-    }
-
-    .status.error {
-      color: #872f2f;
-      background: #fff0f0;
-      border: 1px solid #e2bebe;
-    }
-
-    .qr-card {
-      padding: 38px 29px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .qr-card h2 {
-      font-size: clamp(23px, 3vw, 31px);
-    }
-
-    .qr-description {
-      margin: 11px 0 25px;
-      font-family: Arial, Helvetica, sans-serif;
-      color: #675f5a;
-      line-height: 1.5;
-    }
-
-    .qr-frame {
-      width: min(100%, 300px);
-      aspect-ratio: 1;
-      padding: 18px;
-      border-radius: 18px;
-      background: #f7f1e5;
-      box-shadow: 0 7px 21px rgba(67, 52, 42, 0.13);
       display: flex;
       align-items: center;
       justify-content: center;
+
+      padding: 1.7%;
+      background: #faf6ef;
+      border-radius: 2.2%;
+
+      z-index: 15;
     }
 
     #qrCode {
       width: 100%;
       height: 100%;
+
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
     }
 
     #qrCode canvas,
@@ -335,125 +115,132 @@
       display: block;
       width: 100% !important;
       height: 100% !important;
+      object-fit: contain;
       image-rendering: pixelated;
     }
 
-    .divider {
-      width: 100%;
-      display: flex;
+    /*
+      Meddelanderutan visas bara när användaren
+      väljer eller laddar upp filer.
+    */
+    .status-box {
+      position: fixed;
+      left: 50%;
+      bottom: 25px;
+      transform: translateX(-50%);
+
+      width: min(92%, 540px);
+      padding: 15px 18px;
+
+      display: none;
       align-items: center;
-      gap: 13px;
-      margin: 35px 0 24px;
-      color: #9c806b;
+      justify-content: center;
+      gap: 11px;
+
+      border-radius: 13px;
+      background: rgba(255, 252, 247, 0.98);
+      border: 1px solid rgba(122, 96, 72, 0.25);
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.2);
+
+      color: #453a32;
+      font-size: 15px;
+      line-height: 1.45;
+      text-align: center;
+
+      z-index: 1000;
     }
 
-    .divider::before,
-    .divider::after {
-      content: "";
-      height: 1px;
-      flex: 1;
-      background: #c8b9ad;
+    .status-box.show {
+      display: flex;
     }
 
-    .heart {
-      font-size: 25px;
+    .status-box.success {
+      color: #25633a;
+      background: rgba(242, 250, 244, 0.98);
+      border-color: rgba(37, 99, 58, 0.3);
     }
 
-    .qr-bottom-text {
-      margin: 0;
-      max-width: 300px;
-      font-family: Arial, Helvetica, sans-serif;
+    .status-box.error {
+      color: #8b2929;
+      background: rgba(255, 244, 244, 0.98);
+      border-color: rgba(139, 41, 41, 0.3);
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+
+      border: 3px solid rgba(90, 68, 51, 0.2);
+      border-top-color: #8e6d50;
+      border-radius: 50%;
+
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .progress-box {
+      position: fixed;
+      left: 50%;
+      bottom: 90px;
+      transform: translateX(-50%);
+
+      width: min(90%, 500px);
+      padding: 13px 15px;
+
+      display: none;
+
+      background: rgba(255, 252, 247, 0.98);
+      border: 1px solid rgba(122, 96, 72, 0.25);
+      border-radius: 13px;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.17);
+
+      z-index: 999;
+    }
+
+    .progress-box.show {
+      display: block;
+    }
+
+    .progress-text {
+      margin-bottom: 9px;
+      color: #4b4038;
       font-size: 14px;
-      line-height: 1.55;
-      color: #6f6660;
-    }
-
-    .leaf {
-      margin-top: auto;
-      padding-top: 27px;
-      font-size: 46px;
-      color: #9a8575;
-    }
-
-    .info-card {
-      margin-top: 23px;
-      padding: 34px 25px;
       text-align: center;
     }
 
-    .info-card h2 {
-      font-size: clamp(24px, 4vw, 33px);
+    .progress-track {
+      width: 100%;
+      height: 7px;
+      overflow: hidden;
+
+      background: #e4dbd2;
+      border-radius: 20px;
     }
 
-    .info-grid {
-      margin-top: 27px;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
+    .progress-bar {
+      width: 0%;
+      height: 100%;
+
+      background: #b58a45;
+      border-radius: 20px;
+      transition: width 0.25s ease;
     }
 
-    .info-item {
-      font-family: Arial, Helvetica, sans-serif;
-      color: #645b55;
-    }
-
-    .info-symbol {
-      font-size: 33px;
-      margin-bottom: 10px;
-    }
-
-    .info-title {
-      margin: 0 0 5px;
-      font-weight: 700;
-      color: #3f3935;
-    }
-
-    .info-text {
-      margin: 0;
-      font-size: 13px;
-      line-height: 1.45;
-    }
-
-    @media (max-width: 800px) {
-      .page {
-        padding: 18px 12px 30px;
+    @media (max-width: 600px) {
+      .status-box {
+        bottom: 14px;
+        padding: 13px 14px;
+        font-size: 13px;
       }
 
-      .main-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .qr-card {
-        min-height: auto;
-      }
-
-      .qr-frame {
-        width: min(78vw, 310px);
-      }
-
-      .info-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (max-width: 470px) {
-      .upload-card {
-        padding: 29px 16px;
-      }
-
-      .drop-zone {
-        min-height: 260px;
-        padding: 31px 14px;
-      }
-
-      .info-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .file-row-top {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 5px;
+      .progress-box {
+        bottom: 82px;
       }
     }
   </style>
@@ -463,164 +250,51 @@
 
   <main class="page">
 
-    <header class="hero">
-      <p class="hero-small">Vårt bröllop</p>
-      <h1>Monica &amp; Bjarne</h1>
-      <p class="hero-date">22 augusti 2026</p>
-    </header>
+    <!-- Klickområde för bilder och videor -->
+    <label
+      id="uploadArea"
+      class="upload-area"
+      for="fileInput"
+      aria-label="Ladda upp bilder och videor"
+    ></label>
 
-    <section class="main-grid">
+    <input
+      id="fileInput"
+      type="file"
+      multiple
+      accept="image/*,video/*"
+    >
 
-      <div class="card upload-card">
-
-        <div class="upload-icon">
-          <svg
-            viewBox="0 0 64 64"
-            fill="none"
-            stroke-width="2.2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M20 47H14a11 11 0 0 1-1-22 18 18 0 0 1 35-3 12 12 0 0 1 2 24h-7"/>
-            <path d="M32 51V25"/>
-            <path d="M23 34l9-9 9 9"/>
-          </svg>
-        </div>
-
-        <h2>LADDA UPP BILDER &amp; VIDEOR</h2>
-
-        <p class="intro">
-          Tack för att du hjälper oss samla minnen från dagen.
-        </p>
-
-        <div id="dropZone" class="drop-zone">
-
-          <div class="file-icon">
-            <svg
-              viewBox="0 0 48 48"
-              fill="none"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <rect x="6" y="8" width="36" height="32" rx="4"/>
-              <circle cx="17" cy="19" r="3"/>
-              <path d="M9 36l10-10 7 7 5-5 8 8"/>
-            </svg>
-          </div>
-
-          <p class="drop-title">Dra och släpp filer här</p>
-
-          <p class="drop-subtitle">
-            eller klicka för att välja
-          </p>
-
-          <button
-            id="chooseButton"
-            class="choose-button"
-            type="button"
-          >
-            VÄLJ FILER
-          </button>
-
-          <p class="file-rules">
-            JPG, PNG, WebP, GIF, HEIC, MOV, MP4 · Max 100 MB per fil
-          </p>
-
-        </div>
-
-        <input
-          id="fileInput"
-          type="file"
-          multiple
-          accept="image/*,video/*"
-        >
-
-        <div id="uploadList" class="upload-list"></div>
-
-        <div id="statusBox" class="status"></div>
-
-      </div>
-
-      <aside class="card qr-card">
-
-        <h2>SCANNA QR-KODEN</h2>
-
-        <p class="qr-description">
-          Öppna sidan direkt i mobilen.
-        </p>
-
-        <div class="qr-frame">
-          <div id="qrCode"></div>
-        </div>
-
-        <div class="divider">
-          <span class="heart">♡</span>
-        </div>
-
-        <p class="qr-bottom-text">
-          Spara gärna koden och dela med andra gäster under dagen.
-        </p>
-
-        <div class="leaf">♧</div>
-
-      </aside>
-
-    </section>
-
-    <section class="card info-card">
-
-      <h2>VAD KAN JAG LADDA UPP?</h2>
-
-      <div class="info-grid">
-
-        <div class="info-item">
-          <div class="info-symbol">📷</div>
-          <p class="info-title">Bilder</p>
-          <p class="info-text">
-            Bilder från vigseln, festen och hela dagen.
-          </p>
-        </div>
-
-        <div class="info-item">
-          <div class="info-symbol">🎥</div>
-          <p class="info-title">Videor</p>
-          <p class="info-text">
-            Korta och långa videoklipp från firandet.
-          </p>
-        </div>
-
-        <div class="info-item">
-          <div class="info-symbol">🤍</div>
-          <p class="info-title">Minnen</p>
-          <p class="info-text">
-            Alla fina och roliga ögonblick är välkomna.
-          </p>
-        </div>
-
-        <div class="info-item">
-          <div class="info-symbol">☁️</div>
-          <p class="info-title">Säkert sparat</p>
-          <p class="info-text">
-            Filerna sparas direkt i vårt privata bröllopsgalleri.
-          </p>
-        </div>
-
-      </div>
-
-    </section>
+    <!-- Fungerande QR-kod ovanpå originaldesignen -->
+    <div class="qr-cover">
+      <div id="qrCode"></div>
+    </div>
 
   </main>
 
+  <div id="progressBox" class="progress-box">
+    <div id="progressText" class="progress-text">
+      Förbereder uppladdning…
+    </div>
+
+    <div class="progress-track">
+      <div id="progressBar" class="progress-bar"></div>
+    </div>
+  </div>
+
+  <div id="statusBox" class="status-box"></div>
+
+  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+  <!-- QR-kod -->
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 
   <script>
     /*
-      ==========================================================
+      =========================================================
       SUPABASE
-      ==========================================================
+      =========================================================
     */
 
     const SUPABASE_URL =
@@ -638,49 +312,56 @@
 
 
     /*
-      ==========================================================
-      ELEMENT
-      ==========================================================
+      =========================================================
+      HTML-ELEMENT
+      =========================================================
     */
 
-    const dropZone = document.getElementById("dropZone");
-    const fileInput = document.getElementById("fileInput");
-    const chooseButton = document.getElementById("chooseButton");
-    const uploadList = document.getElementById("uploadList");
-    const statusBox = document.getElementById("statusBox");
+    const fileInput =
+      document.getElementById("fileInput");
+
+    const uploadArea =
+      document.getElementById("uploadArea");
+
+    const statusBox =
+      document.getElementById("statusBox");
+
+    const progressBox =
+      document.getElementById("progressBox");
+
+    const progressText =
+      document.getElementById("progressText");
+
+    const progressBar =
+      document.getElementById("progressBar");
 
 
     /*
-      ==========================================================
+      =========================================================
       QR-KOD
-      QR-koden använder automatiskt adressen som sidan är öppen på.
-      Därför pekar den alltid på din riktiga Vercel-sida.
-      ==========================================================
+
+      QR-koden använder automatiskt den riktiga adressen
+      till sidan som är öppen.
+      =========================================================
     */
 
     function createQrCode() {
-      const qrContainer = document.getElementById("qrCode");
+      const qrContainer =
+        document.getElementById("qrCode");
 
       qrContainer.innerHTML = "";
 
-      let pageUrl =
+      const pageUrl =
         window.location.origin +
         window.location.pathname;
 
-      if (
-        !pageUrl.startsWith("http://") &&
-        !pageUrl.startsWith("https://")
-      ) {
-        pageUrl = window.location.href;
-      }
-
       new QRCode(qrContainer, {
         text: pageUrl,
-        width: 500,
-        height: 500,
-        colorDark: "#252c35",
-        colorLight: "#f7f1e5",
-        correctLevel: QRCode.CorrectLevel.H
+        width: 600,
+        height: 600,
+        colorDark: "#101010",
+        colorLight: "#faf6ef",
+        correctLevel: QRCode.CorrectLevel.M
       });
     }
 
@@ -688,83 +369,79 @@
 
 
     /*
-      ==========================================================
-      STATUSMEDDELANDEN
-      ==========================================================
+      =========================================================
+      STATUS
+      =========================================================
     */
 
-    function setStatus(type, message) {
-      statusBox.className = "status show " + type;
-      statusBox.textContent = message;
-    }
+    let statusTimer;
 
-    function clearStatus() {
-      statusBox.className = "status";
-      statusBox.textContent = "";
-    }
+    function showStatus(message, type) {
+      clearTimeout(statusTimer);
 
+      statusBox.className =
+        "status-box show " + type;
 
-    /*
-      ==========================================================
-      FILNAMN
-      ==========================================================
-    */
-
-    function getFileExtension(file) {
-      const parts = file.name.split(".");
-
-      if (parts.length > 1) {
-        return "." + parts.pop().toLowerCase();
+      if (type === "loading") {
+        statusBox.innerHTML =
+          '<span class="spinner"></span>' +
+          '<span>' + message + "</span>";
+      } else {
+        statusBox.textContent = message;
       }
-
-      if (file.type.includes("jpeg")) return ".jpg";
-      if (file.type.includes("png")) return ".png";
-      if (file.type.includes("webp")) return ".webp";
-      if (file.type.includes("gif")) return ".gif";
-      if (file.type.includes("heic")) return ".heic";
-      if (file.type.includes("mp4")) return ".mp4";
-      if (file.type.includes("quicktime")) return ".mov";
-
-      return "";
     }
 
-    function createSafeFilePath(file) {
-      const extension = getFileExtension(file);
+    function hideStatusAfter(milliseconds) {
+      clearTimeout(statusTimer);
 
-      const uniqueId =
-        crypto.randomUUID
-          ? crypto.randomUUID()
-          : Date.now() +
-            "-" +
-            Math.random().toString(36).slice(2);
+      statusTimer = setTimeout(function () {
+        statusBox.className = "status-box";
+        statusBox.innerHTML = "";
+      }, milliseconds);
+    }
 
-      const now = new Date();
+    function showProgress(current, total, fileName) {
+      progressBox.classList.add("show");
 
-      const dateFolder =
-        now.getFullYear() +
-        "-" +
-        String(now.getMonth() + 1).padStart(2, "0") +
-        "-" +
-        String(now.getDate()).padStart(2, "0");
+      progressText.textContent =
+        "Laddar upp " +
+        current +
+        " av " +
+        total +
+        ": " +
+        fileName;
 
-      return (
-        "guests/" +
-        dateFolder +
-        "/" +
-        uniqueId +
-        extension
-      );
+      const percent =
+        Math.round(((current - 1) / total) * 100);
+
+      progressBar.style.width =
+        percent + "%";
+    }
+
+    function finishProgress() {
+      progressBar.style.width = "100%";
+
+      setTimeout(function () {
+        progressBox.classList.remove("show");
+        progressBar.style.width = "0%";
+      }, 900);
+    }
+
+    function hideProgress() {
+      progressBox.classList.remove("show");
+      progressBar.style.width = "0%";
     }
 
 
     /*
-      ==========================================================
-      KONTROLLERA FIL
-      ==========================================================
+      =========================================================
+      FILKONTROLL
+      =========================================================
     */
 
     function validateFile(file) {
-      const maxFileSize = 100 * 1024 * 1024;
+      const maxSize =
+        100 * 1024 * 1024;
 
       const isImage =
         file.type.startsWith("image/");
@@ -779,7 +456,7 @@
         );
       }
 
-      if (file.size > maxFileSize) {
+      if (file.size > maxSize) {
         throw new Error(
           file.name +
           " är större än 100 MB."
@@ -789,237 +466,274 @@
 
 
     /*
-      ==========================================================
-      SKAPA FILRAD
-      ==========================================================
+      =========================================================
+      SKAPA UNIK FILVÄG
+      =========================================================
     */
 
-    function createFileRow(file) {
-      const row = document.createElement("div");
-      row.className = "file-row";
+    function getExtension(file) {
+      const fileName = file.name || "";
+      const lastDot = fileName.lastIndexOf(".");
 
-      const top = document.createElement("div");
-      top.className = "file-row-top";
+      if (lastDot !== -1) {
+        return fileName
+          .substring(lastDot)
+          .toLowerCase();
+      }
 
-      const name = document.createElement("div");
-      name.className = "file-name";
-      name.textContent = file.name;
+      if (file.type === "image/jpeg") return ".jpg";
+      if (file.type === "image/png") return ".png";
+      if (file.type === "image/webp") return ".webp";
+      if (file.type === "image/gif") return ".gif";
+      if (file.type.includes("heic")) return ".heic";
+      if (file.type === "video/mp4") return ".mp4";
+      if (file.type === "video/quicktime") return ".mov";
 
-      const state = document.createElement("div");
-      state.className = "file-state";
-      state.textContent = "Väntar";
+      return "";
+    }
 
-      const progressTrack = document.createElement("div");
-      progressTrack.className = "progress-track";
+    function createFilePath(file) {
+      const now = new Date();
 
-      const progressBar = document.createElement("div");
-      progressBar.className = "progress-bar";
+      const dateFolder =
+        now.getFullYear() +
+        "-" +
+        String(now.getMonth() + 1).padStart(2, "0") +
+        "-" +
+        String(now.getDate()).padStart(2, "0");
 
-      top.appendChild(name);
-      top.appendChild(state);
+      const uniqueName =
+        typeof crypto !== "undefined" &&
+        crypto.randomUUID
+          ? crypto.randomUUID()
+          : Date.now() +
+            "-" +
+            Math.random()
+              .toString(36)
+              .substring(2, 12);
 
-      progressTrack.appendChild(progressBar);
-
-      row.appendChild(top);
-      row.appendChild(progressTrack);
-
-      uploadList.appendChild(row);
-      uploadList.classList.add("show");
-
-      return {
-        row,
-        state,
-        progressBar
-      };
+      return (
+        "guests/" +
+        dateFolder +
+        "/" +
+        uniqueName +
+        getExtension(file)
+      );
     }
 
 
     /*
-      ==========================================================
+      =========================================================
       LADDA UPP EN FIL
-      ==========================================================
+      =========================================================
     */
 
-    async function uploadOneFile(file, elements) {
+    async function uploadOneFile(file) {
       validateFile(file);
 
-      elements.state.textContent = "Laddar upp";
-      elements.progressBar.style.width = "35%";
+      const filePath =
+        createFilePath(file);
 
-      const filePath = createSafeFilePath(file);
-
-      const { data, error } =
+      const result =
         await supabaseClient.storage
           .from(BUCKET_NAME)
           .upload(filePath, file, {
             cacheControl: "3600",
             upsert: false,
             contentType:
-              file.type || "application/octet-stream"
+              file.type ||
+              "application/octet-stream"
           });
 
-      if (error) {
-        elements.state.textContent = "Misslyckades";
-        elements.progressBar.style.width = "0%";
-
+      if (result.error) {
         throw new Error(
-          file.name + ": " + error.message
+          result.error.message
         );
       }
 
-      if (!data || !data.path) {
-        elements.state.textContent = "Misslyckades";
-        elements.progressBar.style.width = "0%";
-
+      if (
+        !result.data ||
+        !result.data.path
+      ) {
         throw new Error(
-          file.name +
-          ": Supabase bekräftade inte uppladdningen."
+          "Supabase bekräftade inte uppladdningen."
         );
       }
 
-      elements.progressBar.style.width = "100%";
-      elements.state.textContent = "Uppladdad";
-
-      return data;
+      return result.data;
     }
 
 
     /*
-      ==========================================================
-      LADDA UPP FLERA FILER
-      ==========================================================
+      =========================================================
+      LADDA UPP ALLA VALDA FILER
+      =========================================================
     */
 
     async function handleFiles(fileList) {
-      const files = Array.from(fileList || []);
+      const files =
+        Array.from(fileList || []);
 
       if (files.length === 0) {
         return;
       }
 
-      clearStatus();
-      uploadList.innerHTML = "";
-      uploadList.classList.add("show");
-
-      const rows = files.map(file => {
-        return {
-          file,
-          elements: createFileRow(file)
-        };
-      });
-
       let successfulUploads = 0;
-      const failedUploads = [];
+      const errors = [];
 
-      setStatus(
-        "loading",
-        "Uppladdningen har startat. Stäng inte sidan."
+      showStatus(
+        "Uppladdningen startar. Stäng inte sidan.",
+        "loading"
       );
 
-      for (const item of rows) {
-        try {
-          await uploadOneFile(
-            item.file,
-            item.elements
+      try {
+        for (
+          let index = 0;
+          index < files.length;
+          index++
+        ) {
+          const file = files[index];
+
+          showProgress(
+            index + 1,
+            files.length,
+            file.name
           );
 
-          successfulUploads++;
+          try {
+            await uploadOneFile(file);
+            successfulUploads++;
 
-        } catch (error) {
-          console.error("Uppladdningsfel:", error);
-          failedUploads.push(error.message);
+          } catch (error) {
+            console.error(
+              "Fel vid uppladdning:",
+              error
+            );
+
+            errors.push(
+              file.name +
+              ": " +
+              error.message
+            );
+          }
         }
-      }
 
-      fileInput.value = "";
+        fileInput.value = "";
 
-      if (
-        successfulUploads === files.length
-      ) {
-        setStatus(
-          "success",
-          successfulUploads === 1
-            ? "Tack! Din fil har laddats upp och sparats."
-            : "Tack! Alla " +
-              successfulUploads +
-              " filer har laddats upp och sparats."
+        if (
+          successfulUploads === files.length
+        ) {
+          finishProgress();
+
+          showStatus(
+            successfulUploads === 1
+              ? "Tack! Din fil har laddats upp och sparats."
+              : "Tack! Alla " +
+                successfulUploads +
+                " filer har laddats upp och sparats.",
+            "success"
+          );
+
+          hideStatusAfter(6000);
+          return;
+        }
+
+        hideProgress();
+
+        if (successfulUploads > 0) {
+          showStatus(
+            successfulUploads +
+            " av " +
+            files.length +
+            " filer laddades upp. " +
+            errors.join(" "),
+            "error"
+          );
+
+          return;
+        }
+
+        showStatus(
+          "Ingen fil kunde laddas upp. " +
+          errors.join(" "),
+          "error"
         );
 
-        return;
-      }
+      } catch (error) {
+        hideProgress();
 
-      if (successfulUploads > 0) {
-        setStatus(
-          "error",
-          successfulUploads +
-          " av " +
-          files.length +
-          " filer laddades upp. Fel: " +
-          failedUploads.join(" ")
+        showStatus(
+          "Uppladdningen misslyckades: " +
+          error.message,
+          "error"
         );
-
-        return;
       }
-
-      setStatus(
-        "error",
-        "Ingen fil kunde laddas upp. " +
-        failedUploads.join(" ")
-      );
     }
 
 
     /*
-      ==========================================================
-      KLICK OCH FILVAL
-      ==========================================================
+      =========================================================
+      FILVAL
+      =========================================================
     */
 
-    chooseButton.addEventListener("click", function(event) {
-      event.stopPropagation();
-      fileInput.click();
-    });
-
-    dropZone.addEventListener("click", function() {
-      fileInput.click();
-    });
-
-    fileInput.addEventListener("change", function() {
-      handleFiles(fileInput.files);
-    });
+    fileInput.addEventListener(
+      "change",
+      function () {
+        handleFiles(fileInput.files);
+      }
+    );
 
 
     /*
-      ==========================================================
-      DRA OCH SLÄPP
-      ==========================================================
+      =========================================================
+      DRA OCH SLÄPP PÅ DATOR
+      =========================================================
     */
 
-    ["dragenter", "dragover"].forEach(eventName => {
-      dropZone.addEventListener(
+    [
+      "dragenter",
+      "dragover"
+    ].forEach(function (eventName) {
+      uploadArea.addEventListener(
         eventName,
-        function(event) {
+        function (event) {
           event.preventDefault();
           event.stopPropagation();
-          dropZone.classList.add("dragging");
+
+          uploadArea.classList.add(
+            "dragging"
+          );
         }
       );
     });
 
-    ["dragleave", "drop"].forEach(eventName => {
-      dropZone.addEventListener(
+    [
+      "dragleave",
+      "drop"
+    ].forEach(function (eventName) {
+      uploadArea.addEventListener(
         eventName,
-        function(event) {
+        function (event) {
           event.preventDefault();
           event.stopPropagation();
-          dropZone.classList.remove("dragging");
+
+          uploadArea.classList.remove(
+            "dragging"
+          );
         }
       );
     });
 
-    dropZone.addEventListener("drop", function(event) {
-      handleFiles(event.dataTransfer.files);
-    });
+    uploadArea.addEventListener(
+      "drop",
+      function (event) {
+        const droppedFiles =
+          event.dataTransfer.files;
+
+        handleFiles(droppedFiles);
+      }
+    );
   </script>
 
 </body>
