@@ -32,37 +32,39 @@ body{
   background:url("background.jpeg") center top / 100% auto no-repeat;
 }
 
-/* Mindre ljus ruta, flyttad mer åt vänster */
+/*
+  Den ljusa QR-rutan ligger ovanpå QR-området i bakgrunden.
+  Den riktiga QR-koden är centrerad med samma avstånd
+  på vänster och höger sida.
+*/
 .qr-cover{
   position:absolute;
-  left:65.8%;
-  top:41.1%;
-  width:20.5%;
-  height:15.5%;
+  left:65.4%;
+  top:40.2%;
+  width:23.4%;
+  height:18.1%;
 
   display:flex;
   justify-content:center;
   align-items:center;
 
   background:#fffaf2;
-  border-radius:8%;
-  box-shadow:0 5px 16px rgba(0,0,0,.06);
+  border-radius:7%;
+  box-shadow:0 5px 16px rgba(0,0,0,.07);
   overflow:hidden;
   z-index:40;
 }
 
-/* QR-koden centrerad i rutan */
-.qr-overlay{
+.qr-image{
   display:block;
-  width:72%;
+  width:68%;
   height:auto;
-  max-width:72%;
-  margin:0 auto;
-  padding:0;
   object-fit:contain;
+  margin:0;
+  padding:0;
 }
 
-/* Klickområdet ovanpå knappen VÄLJ FILER */
+/* Klickbart område ovanpå knappen VÄLJ FILER */
 .upload-click{
   position:absolute;
   left:27.8%;
@@ -77,7 +79,7 @@ body{
   display:none;
 }
 
-/* Meddelanderutan för uppladdning */
+/* Meddelande vid uppladdning */
 .status-box{
   position:absolute;
   left:8%;
@@ -99,6 +101,11 @@ body{
 
 .status-box.show{
   display:block;
+}
+
+.status-box.loading{
+  color:#3f3f3f;
+  background:#ffffff;
 }
 
 .status-box.success{
@@ -123,14 +130,16 @@ body{
 
 <div class="page">
 
+  <!-- Riktig fungerande QR-kod -->
   <div class="qr-cover">
     <img
-      class="qr-overlay"
-      src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAXIAAAFyAQAAAADAX2ykAAACZElEQVR4nO2bQYrcMBBFX8WGWaqhD5Cj2FfLzewDDVjLgMzPQpLt6WEShridUahaiPHoLQo+XyqV1CY+E/O3T+HgvPPOO++8885/xFuJHohmzGZmYzSDWOfGC/Nx/mR+kCQtAHSyEYAg2UgnSdJb/tn5OH8yH6tD5xtF7h/W57li7Evzcf4cvn/8x6DVIN4Tw3JHxGvzcf7ZfHwR8201G0PCxn+ej/N/w1f/BgERjPDTNI/AfHvtRYRjC+Sr5e/8H+JYPNGJYXkY6twgSdNXy9/530f27+5QzTdMxNU0f08UY1+Xj/Pn8sW/gxKa6LKY+a9s2JAyksP92xhfxJtCQlNQVhWqvkCnfcL1bY2v5lwgD1OQipNDgkHpyLm+jfHb4puAkNibWNJSBobF9W2Ur/vVjCzrdSEBGV9Tl4/t8lXX+Y2c/FvsW72tI7h+jbGb/Wzyll32D6ztAtoAvdvm/xhfd6L6MOQux/bIcn1bYzf7hdWE7GHYQGDPhlh7QUgWK/Kx/lz+cP+Ww5EW9VMPimBn3/b5d/tv7xZmmv/yuvnRvmtv1HbVNSjURF56XL30vVtkj/0n8vSvB+HVS+WtgnXtzV+uz/qBCSMsFCujlh7hgkMVmOYrsjH+XP5rK+Vry4J1l7EPmm+LTLiPUFIva7Jx/lz+UN9VXvNpXR+WKR9fW6S3/obbNts3YlzuQX19azr+x/wZvZSX2zUdgezmX3APzsf58/lNbEa7E8nQ7nkL59fPX/nH+Jh/92j3A/mTof3nxvl372fzBHqc6xhgcMjLNe3Md78993OO++88847fzn/C8qUV43xUtrjAAAAAElFTkSuQmCC"
+      class="qr-image"
+      src="qr-code-riktig.png"
       alt="QR-kod till Monica och Bjarnes bröllopssida"
     >
   </div>
 
+  <!-- Klickområde för filuppladdning -->
   <label class="upload-click">
     <input
       id="fileInput"
@@ -166,14 +175,14 @@ const ALLOWED_TYPES = [
 const fileInput = document.getElementById("fileInput");
 const statusBox = document.getElementById("statusBox");
 
-function showStatus(message,type=""){
-  statusBox.className="status-box show";
+function showStatus(message,type="loading"){
+  statusBox.className = "status-box show";
 
   if(type){
     statusBox.classList.add(type);
   }
 
-  statusBox.textContent=message;
+  statusBox.textContent = message;
 }
 
 function cleanFileName(fileName){
@@ -186,21 +195,21 @@ function cleanFileName(fileName){
 }
 
 function createFilePath(fileName){
-  const cleanedName=cleanFileName(fileName);
+  const cleanedName = cleanFileName(fileName);
 
-  const uniqueId=
-    Date.now()+"-"+Math.random().toString(36).slice(2,10);
+  const uniqueId =
+    Date.now() + "-" + Math.random().toString(36).slice(2,10);
 
   return `brollop/${uniqueId}-${cleanedName}`;
 }
 
 async function uploadFile(file){
-  const path=createFilePath(file.name);
+  const path = createFilePath(file.name);
 
-  const uploadUrl=
+  const uploadUrl =
     `${SUPABASE_URL}/storage/v1/object/${BUCKET}/${path}`;
 
-  const response=await fetch(uploadUrl,{
+  const response = await fetch(uploadUrl,{
     method:"POST",
 
     headers:{
@@ -212,18 +221,18 @@ async function uploadFile(file){
     body:file
   });
 
-  const responseText=await response.text();
+  const responseText = await response.text();
 
-  let responseData=null;
+  let responseData = null;
 
   try{
-    responseData=JSON.parse(responseText);
+    responseData = JSON.parse(responseText);
   }catch{
-    responseData=null;
+    responseData = null;
   }
 
   if(!response.ok){
-    const errorMessage=
+    const errorMessage =
       responseData?.message ||
       responseData?.error ||
       responseText ||
@@ -236,9 +245,9 @@ async function uploadFile(file){
 }
 
 fileInput.addEventListener("change",async()=>{
-  const files=Array.from(fileInput.files || []);
+  const files = Array.from(fileInput.files || []);
 
-  if(files.length===0){
+  if(files.length === 0){
     return;
   }
 
@@ -250,32 +259,34 @@ fileInput.addEventListener("change",async()=>{
         "error"
       );
 
-      fileInput.value="";
+      fileInput.value = "";
       return;
     }
 
-    if(file.size>MAX_FILE_SIZE){
+    if(file.size > MAX_FILE_SIZE){
       showStatus(
         `❌ ${file.name} är större än 50 MB.`,
         "error"
       );
 
-      fileInput.value="";
+      fileInput.value = "";
       return;
     }
   }
 
-  let uploaded=0;
+  let uploaded = 0;
 
   try{
     showStatus(
-      `⏳ Förbereder uppladdning av ${files.length} fil(er)...`
+      `⏳ Förbereder uppladdning av ${files.length} fil(er)...`,
+      "loading"
     );
 
     for(const file of files){
 
       showStatus(
-        `⏳ Laddar upp ${uploaded+1} av ${files.length}: ${file.name}`
+        `⏳ Laddar upp ${uploaded + 1} av ${files.length}: ${file.name}`,
+        "loading"
       );
 
       await uploadFile(file);
@@ -298,7 +309,7 @@ fileInput.addEventListener("change",async()=>{
     );
 
   }finally{
-    fileInput.value="";
+    fileInput.value = "";
   }
 });
 </script>
